@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cc.darhao</groupId>
 	<artifactId>DaUtils</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPHOT</version>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -17,19 +17,20 @@
 				</configuration>
 			</plugin>
 
-
-			<!-- jar插件 -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
+					<attach>true</attach>
 				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

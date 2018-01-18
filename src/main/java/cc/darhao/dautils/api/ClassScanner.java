@@ -2,8 +2,11 @@ package cc.darhao.dautils.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -18,6 +21,41 @@ import java.util.jar.JarFile;
 public class ClassScanner {
 	
 	private List<String> classPaths;
+	
+	
+	/**
+	 * 在文件夹中寻找所有类
+	 * @param path
+	 * @return
+	 */
+	public static List<Class> searchClassInDir(String path){
+		//创建返回集
+		List<Class> classes = new ArrayList<Class>();
+		ClassScanner classScanner = new ClassScanner();
+		classScanner.doPath(new File(path));
+		URLClassLoader urlClassLoader = null;
+		try {
+			URL url = new File(path + "\\").toURL();
+			urlClassLoader = URLClassLoader.newInstance(new URL[] {url});
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		for (String s : classScanner.classPaths) {
+			String[] ss = s.replace(".class", "").split("\\\\");
+			String className = ss[ss.length - 1];
+			for (int i = ss.length - 2; i >= 0; i--) {
+				try {
+					Class cls = urlClassLoader.loadClass(className);
+					classes.add(cls);
+					break;
+				} catch (ClassNotFoundException | NoClassDefFoundError e) {
+					className = ss[i] + "." + className;
+				}
+			}
+		}
+		return classes;
+	}
+	
 	
 	/**
 	 * 根据包名把所有类获取（如果类文件在jar包里会尝试从jar包中获取）
@@ -60,7 +98,6 @@ public class ClassScanner {
 			}
 		}else {
 			ClassScanner classScanner = new ClassScanner();
-			classScanner.classPaths = new ArrayList<String>();
 			// 先把包名转换为路径,首先得到项目的classpath
 			String classpath = ClassScanner.class.getResource("/").getPath();
 			// 然后把我们的包名basPach转换为路径名
@@ -107,4 +144,10 @@ public class ClassScanner {
 			}
 		}
 	}
+	
+	
+	public ClassScanner() {
+		classPaths = new ArrayList<String>();
+	}
+	
 }
