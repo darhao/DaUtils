@@ -31,6 +31,10 @@ public class ClassScanner {
 	public static List<Class> searchClassInDir(String path){
 		//创建返回集
 		List<Class> classes = new ArrayList<Class>();
+		if(path == null || path.equals("")) {
+			System.out.println("parameter is null");
+			return classes;
+		}
 		ClassScanner classScanner = new ClassScanner();
 		classScanner.doPath(new File(path));
 		URLClassLoader urlClassLoader = null;
@@ -63,9 +67,12 @@ public class ClassScanner {
 	 * @return 类列表
 	 */
 	public static List<Class> searchClass(String packagePath){
-		System.out.println(ClassScanner.class.getResource("/"));
 		//创建返回集
 		List<Class> classes = new ArrayList<Class>();
+		if(packagePath == null || packagePath.equals("")) {
+			System.out.println("parameter is null");
+			return classes;
+		}
 		if(ClassScanner.class.getResource("/") == null) {
 			try {
 				URI jarPath = ClassScanner.class.getProtectionDomain().getCodeSource().getLocation().toURI();

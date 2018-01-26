@@ -121,7 +121,7 @@ public class QRCodeUtil {
 	 *            文字本文
 	 */
 	private static void addFontImage(BufferedImage source, String declareText) {
-		BufferedImage textImage = FontImageUtil.getImage(declareText, QRCODE_SIZE, 50);
+		BufferedImage textImage = FontImageUtil.createImage(declareText, QRCODE_SIZE, QRCODE_SIZE);
 		Graphics2D graph = source.createGraphics();
 
 		int width = textImage.getWidth(null);

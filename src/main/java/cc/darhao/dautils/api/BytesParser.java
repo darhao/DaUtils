@@ -11,6 +11,32 @@ import java.util.List;
  * @author 沫熊工作室 <a href="http://www.darhao.cc">www.darhao.cc</a>
  */
 public class BytesParser {
+	
+	
+	/**
+	 * 数组和集合转换
+	 */
+	public static byte[] cast(List<Byte> bytes) {
+		byte[] bs = new byte[bytes.size()];
+		for (int i = 0; i < bytes.size(); i++) {
+			bs[i] = bytes.get(i);
+		}
+		return bs;
+	}
+	
+	
+	/**
+	 * 数组和集合转换
+	 */
+	public static List<Byte> cast(byte[] bytes) {
+		List<Byte> bs = new ArrayList<Byte>();
+		for (int i = 0; i < bytes.length; i++) {
+			bs.add(bytes[i]);
+		}
+		return bs;
+	}
+	
+	
 	/**
 	 * 取字节的某一位的布尔值，从右边的0算起
 	 */
@@ -43,9 +69,9 @@ public class BytesParser {
 
 
 	/**
-	 * 把字节集转换成十六进制字符串，中间用空格隔开
+	 * 把字节集直观地（不按ASCII）转换成表示十六进制数值的字符串，中间用空格隔开
 	 */
-	public static String parseBytesToString(List<Byte> bs) {
+	public static String parseBytesToHexString(List<Byte> bs) {
 		StringBuffer sb = new StringBuffer();
 		for (Byte b1 : bs) {
 			//转成无符号的整型
@@ -63,9 +89,9 @@ public class BytesParser {
 	
 	
 	/**
-	 * 把十六进制字符串转换成字节集，中间用空格隔开
+	 * 把表示十六进制数值的字符串直观地（不按ASCII）转换成字节集，中间用空格隔开
 	 */
-	public static List<Byte> parseStringToBytes(String string) {
+	public static List<Byte> parseHexStringToBytes(String string) {
 		List<Byte> bytes = new ArrayList<Byte>();
 		String[] strings =  string.split(" ");
 		for (String s : strings) {
@@ -83,7 +109,7 @@ public class BytesParser {
 		int j = - i;
 		return parseIntegerToBytes(j);
 	}
-	
+
 
 	/**
 	 * 把1-4个字节集拼接成32位有符号整型，如果为负数，请把字节集高位用1填充至32位再传入
@@ -119,6 +145,49 @@ public class BytesParser {
 		}while(i != 0);
 		//字节倒序
 		Collections.reverse(bytes);
+		return bytes;
+	}
+	
+	
+	/**
+	 * 把数字字节集转换成某种进制的数字文本（不按ASCII，支持16、10、2进制）
+	 */
+	public static String parseBytesToXRadixString(List<Byte> bytes, int radix) {
+		StringBuffer sb = new StringBuffer();
+		for (Byte b : bytes) {
+			switch (radix) {
+			case 16:
+				String hexString = Integer.toHexString(b).toUpperCase();
+				hexString = StringUtil.fixLength(hexString, 2);
+				sb.append(hexString);
+				break;
+			case 10:
+				sb.append(Integer.toString(b));
+				break;
+			case 2:
+				String binString = Integer.toBinaryString(b);
+				binString = StringUtil.fixLength(binString, 8);
+				sb.append(binString);
+				break;
+			default:
+				break;
+			}
+			sb.append(" ");
+		}
+		return sb.toString().trim();
+	}
+	
+
+	/**
+	 * 把某种进制的数字文本转换成数字字节集（不按ASCII，支持16、10、2进制）
+	 */
+	public static List<Byte> parseXRadixStringToBytes(String text, int radix) {
+		
+		List<Byte> bytes = new ArrayList<Byte>();
+		for (String byteString : text.split(" ")) {
+			int i = Integer.valueOf(byteString, radix);
+			bytes.add((byte) i);
+		}
 		return bytes;
 	}
 }
