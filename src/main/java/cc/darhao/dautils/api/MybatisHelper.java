@@ -1,11 +1,11 @@
 package cc.darhao.dautils.api;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 /**
@@ -14,6 +14,14 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
  */
 public class MybatisHelper{
 
+	
+	/**
+	 * 配置文件路径
+	 */
+	private static String confPath = "";
+	
+	private static byte[] configData;
+	
 	/**
 	 * Session包装类
 	 * @param <M>
@@ -55,10 +63,8 @@ public class MybatisHelper{
 	 * @throws IOException 文件不存在
 	 */
 	public static <T> MybatisSession<T> getMapper(String confPath ,Class<T> mapperType) throws IOException {
-		InputStream inputStream = Resources.getResourceAsStream(confPath);
-		SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-		SqlSessionFactory factory = builder.build(inputStream);
-		SqlSession session = factory.openSession();
+		initFactory(confPath);
+		SqlSession session = new SqlSessionFactoryBuilder().build(new ByteArrayInputStream(configData)).openSession();
 		T mapper = session.getMapper(mapperType);
 		return new MybatisHelper().new MybatisSession<T>(session,mapper);
 	}
@@ -73,6 +79,18 @@ public class MybatisHelper{
 	public static <T> MybatisSession<T> getMapper(Class<T> mapperType) throws IOException {
 		return getMapper("mybatis-config.xml", mapperType);
 	}
+	
+	
+	private static void initFactory(String confPath) throws IOException {
+		if(!MybatisHelper.confPath.equals(confPath)) {
+			MybatisHelper.confPath = confPath;
+			InputStream inputStream = Resources.getResourceAsStream(confPath);
+			MybatisHelper.configData = new byte[inputStream.available()];
+			inputStream.read(MybatisHelper.configData);
+		}
+	}
+	
+	
 }
 
 
