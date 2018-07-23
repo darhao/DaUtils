@@ -61,4 +61,44 @@ public class StringUtil {
 	}
 	
 	
+	/**
+	 * 把下划线命名法转换成小驼峰命名法
+	 */
+	public static String trimUnderLineAndToUpCase(String string) {
+		StringBuffer stringBuffer = new StringBuffer(string);
+		for (int i = 0; i < stringBuffer.length(); i++) {
+			if(stringBuffer.charAt(i) == '_') {
+				char lowCaseChar = stringBuffer.charAt(i+1);
+				char upCaseChar = (char) (lowCaseChar - 32);
+				stringBuffer.setCharAt(i+1, upCaseChar);
+				stringBuffer.deleteCharAt(i);
+				i--;
+			}
+		}
+		return stringBuffer.toString();
+	}
+	
+	
+	/**
+	 * 把小驼峰命名法转换成下划线命名法
+	 */
+	public static String toLowCaseAndInsertUnderLine(String string) {
+		StringBuffer stringBuffer = new StringBuffer(string);
+		for (int i = 0; i < stringBuffer.length(); i++) {
+			if(stringBuffer.charAt(i) >= 'A' && stringBuffer.charAt(i) <= 'Z') {
+				char upCaseChar = stringBuffer.charAt(i);
+				char lowCaseChar = (char) (upCaseChar + 32);
+				stringBuffer.setCharAt(i, lowCaseChar);
+				stringBuffer.insert(i, "_");
+				i++;
+			}
+		}
+		return stringBuffer.toString();
+	}
+	
+	
+	public static void main(String[] args) {
+		trimUnderLineAndToUpCase("task_id");
+		toLowCaseAndInsertUnderLine("taskId");
+	}
 }
