@@ -150,6 +150,44 @@ public class BytesParser {
 	
 	
 	/**
+	 * 把1-8个字节集拼接成64位有符号整型，如果为负数，请把字节集高位用1填充至64位再传入
+	 */
+	public static long parseBytesToLong(List<Byte> bytes) {
+		if(bytes == null || bytes.isEmpty()) {
+			throw new IllegalArgumentException("字节集不能为空");
+		}
+		long i = 0;
+		for (int j = 0; j < bytes.size(); j++) {
+			byte b1 = bytes.get(j).byteValue();
+			//高位置零
+			long temp = b1 & 0x00000000000000FF;
+			//按位或
+			i |= temp;
+			//最后一个字节不左移
+			if(j != bytes.size() -1) {
+				i <<= 8;
+			}
+		}
+		return i;
+	}
+	
+	
+	/**
+	 * 把64位有符号整型分解成1-8个字节集，如果为负数，将会把字节集高位用1填充至64位再返回
+	 */
+	public static List<Byte> parseLongToBytes(long i) {
+		List<Byte> bytes = new ArrayList<Byte>();
+		do {
+			bytes.add((byte) i);
+			i >>>= 8;
+		}while(i != 0);
+		//字节倒序
+		Collections.reverse(bytes);
+		return bytes;
+	}
+	
+	
+	/**
 	 * 把数字字节集转换成某种进制的数字文本（不按ASCII，支持16、10、2进制）
 	 */
 	public static String parseBytesToXRadixString(List<Byte> bytes, int radix) {
@@ -182,11 +220,28 @@ public class BytesParser {
 	 * 把某种进制的数字文本转换成数字字节集（不按ASCII，支持16、10、2进制）
 	 */
 	public static List<Byte> parseXRadixStringToBytes(String text, int radix) {
-		
 		List<Byte> bytes = new ArrayList<Byte>();
 		for (String byteString : text.split(" ")) {
 			int i = Integer.valueOf(byteString, radix);
 			bytes.add((byte) i);
+		}
+		return bytes;
+	}
+	
+	
+	/**
+	 * 把字节集的长度修正到指定长度，如果新长度较大，则将在前面填充数个0，如果新长度较小，则会删除前面数个字节
+	 */
+	public static List<Byte> fixLength(List<Byte> bytes, int newSize) {
+		int oldSize = bytes.size();
+		if(newSize >= oldSize) {
+			for (int i = 0; i < newSize - oldSize; i++) {
+				bytes.add(0, (byte) 0x00);
+			}
+		}else {
+			for (int i = 0; i < oldSize - newSize; i++) {
+				bytes.remove(0);
+			}
 		}
 		return bytes;
 	}

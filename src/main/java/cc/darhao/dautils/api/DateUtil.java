@@ -60,6 +60,16 @@ public class DateUtil {
 		return simpleDateFormat.format(date);
 	}
 	
+	public static String HHmm(Date date) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+		return simpleDateFormat.format(date);
+	}
+	
+	public static String HHmmssSSS(Date date) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+		return simpleDateFormat.format(date);
+	}
+	
 	public static Date yyyyMMdd(String date) throws ParseException{
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return simpleDateFormat.parse(date);
@@ -77,6 +87,16 @@ public class DateUtil {
 	
 	public static Date HHmmss(String date) throws ParseException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+		return simpleDateFormat.parse(date);
+	}
+	
+	public static Date HHmm(String date) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+		return simpleDateFormat.parse(date);
+	}
+	
+	public static Date HHmmssSSS(String date) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
 		return simpleDateFormat.parse(date);
 	}
 	

@@ -25,7 +25,9 @@ public class TextFileUtil {
 		StringBuffer stringBuffer = new StringBuffer();
 		while((s = bufferedReader.readLine()) != null){
 			stringBuffer.append(s);
+			stringBuffer.append("\n");
 		}
+		stringBuffer.deleteCharAt(stringBuffer.length() - 1);
 		bufferedReader.close();
 		return stringBuffer.toString();
 	}
